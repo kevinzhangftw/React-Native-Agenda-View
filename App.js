@@ -1,14 +1,45 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, Alert } from 'react-native';
 import { Agenda } from 'react-native-calendars'
 
 export default class App extends React.Component {
   state = {
-    items : {}
+    items : {
+      '2018-07-19': [
+        {
+          name: 'add stone wall',
+          height: 95
+        },
+        {
+          name: 'landscaping',
+          height: 120
+        }
+      ],
+      '2018-07-20': [
+        // {
+        //   name: 'fix door',
+        //   height: 50
+        // },
+        // {
+        //   name: 'masonary',
+        //   height: 180
+        // }
+      ]
+    }
   }
+
+  goToDetailScreen = () => {
+    Alert.alert('go to job details now')
+  }
+
   renderItem = (item) => {
     return (
-      <View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text></View>
+      <TouchableHighlight
+        style={[styles.item, {height: item.height}]}
+        onPress={this.goToDetailScreen}
+      >
+        <Text>{item.name}</Text>
+      </TouchableHighlight>
     )
   }
 
@@ -19,7 +50,7 @@ export default class App extends React.Component {
 
   loadItems = (day) => {
     setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
+      for (let i = 0; i < 2; i++) {
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = this.timeToString(time);
         if (!this.state.items[strTime]) {
@@ -44,27 +75,30 @@ export default class App extends React.Component {
   }
 
   rowHasChanged = (r1, r2) => {
-    return r1.name !== r2.name;
+    return r1.name !== r2.name
   }
 
   renderEmptyDate = () => {
     return (
       <View style={styles.emptyDate}><Text>This is empty date!</Text></View>
-    );
+    )
   }
 
   render() {
+    console.log('items now are: ', this.state.items)
     return (
       <Agenda
         items={this.state.items}
-        loadItemsForMonth={this.loadItems}
+        // loadItemsForMonth={this.loadItems}
         selected={'2018-07-19'}
         renderItem={this.renderItem}
-        renderEmptyDate={this.renderEmptyDate}
+        // renderEmptyDate={this.renderEmptyDate}
+        renderEmptyDate={() => <View />}
         rowHasChanged={this.rowHasChanged}
+        onDayPress={(day)=>{console.log('day pressed')}}
         hideKnob={true}
       />
-    );
+    )
   }
 }
 
@@ -88,4 +122,4 @@ const styles = StyleSheet.create({
     flex:1,
     paddingTop: 30
   }
-});
+})
